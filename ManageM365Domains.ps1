@@ -510,7 +510,7 @@ Function ConnectMSGraph
         catch
         {
             out-logfile -string $_
-            out-logfile -string "Error connecting to Microsoft Graph."
+            out-logfile -string "Error connecting to Microsoft Graph." -isError:$true
         }
     }
     elseif ($msGraphAuthType -eq $certificateAuth)
