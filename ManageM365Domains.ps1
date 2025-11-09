@@ -313,6 +313,14 @@ function Test-IsValidGuid {
 
     out-logfile -string $isValid
 
+    if ($isValid -eq $FALSE)
+    {
+        out-logfile -string "Incorrect GUID format provided - please provide correct GUID format"
+    }
+    else {
+        out-logfile -string "GUID format specified - proceed."
+    }
+
     return $isValid
 }
 
