@@ -300,6 +300,19 @@ Function CheckGraphEnvironment
 }
 
 #*****************************************************
+function Test-IsValidGuid {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$GuidString
+    )
+
+    $isValid = [System.Guid]::TryParse($GuidString, [ref]$null)
+
+    return $isValid
+}
+
+#*****************************************************
 Function CheckGraphTenantID
 {
     [cmdletbinding()]
@@ -310,6 +323,8 @@ Function CheckGraphTenantID
         $msGraphTenantID
     )
 
+    $isValid -eq $false
+
     out-logfile -string "Entering CheckGraphTenantID"
 
     if ($msGraphTenantID -eq "")
@@ -317,10 +332,31 @@ Function CheckGraphTenantID
         $msGraphTenantID = read-host "Provied an Entra / Graph TenantID: "
 
         out-logfile -string ("MSGraphTenantID: "+$msGraphTenantID)
+
+        $isValid = Test-IsValidGuid -GuidString $msGraphTenantID
+
+        do {
+            $msGraphTenantID = read-host "Provied an Entra / Graph TenantID: "
+
+            out-logfile -string ("MSGraphTenantID: "+$msGraphTenantID)
+
+            $isValid = Test-IsValidGuid -GuidString $msGraphTenantID
+        } while (
+            $isValid -eq $false
+        )
     }
     else
     {
-        out-logfile -string "Returning the supplied msgraph tenant id."
+        $isValid = Test-IsValidGuid -GuidString $msGraphTenantID
+
+        if ($isValid -eq $FALSE)
+        {
+            out-logfile -string "Administrator supplied tenantID is not in a valid GUID format." -isError:$TRUE
+        }
+        else 
+        {
+            out-logfile -string "Returning the supplied msgraph tenant id."
+        }
     }
 
     return $msGraphTenantID
