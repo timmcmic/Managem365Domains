@@ -1069,8 +1069,6 @@ Function IsDomainViral
 #*****************************************************
  Function writeOperationsList
 {
-    [cmdletbinding()]
-
     write-host "********************************************************"
     write-host "Select operation to perform:"
     write-host "1:  Add a Domain"
