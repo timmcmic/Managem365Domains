@@ -301,27 +301,29 @@ Function CheckGraphEnvironment
 
 #*****************************************************
 function Test-IsValidGuid {
-    [CmdletBinding()]
-    Param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [string]$GuidString
-    )
-
-    out-logfile -string "Testing if input is a valid GUID."
-
-    $isValid = [guid]::TryParse($GuidString, $([ref][guid]::Empty))
-
-    out-logfile -string $isValid
-
-    if ($isValid -eq $FALSE)
     {
-        out-logfile -string "Incorrect GUID format provided - please provide correct GUID format"
+    <#
+    .SYNOPSIS
+    Validates a given input string and checks string is a valid GUID
+    .DESCRIPTION
+    Validates a given input string and checks string is a valid GUID by using the .NET method Guid.TryParse
+    .EXAMPLE
+    Test-Guid -InputObject "3363e9e1-00d8-45a1-9c0c-b93ee03f8c13"
+    .NOTES
+    Uses .NET method [guid]::TryParse()
+    #>
+    [Cmdletbinding()]
+    [OutputType([bool])]
+	param
+	(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipelineByPropertyName = $true)]
+        [AllowEmptyString()]
+		[string]$guidString
+	)
+    process{
+        return [guid]::TryParse($guidString, $([ref][guid]::Empty))
     }
-    else {
-        out-logfile -string "GUID format specified - proceed."
-    }
-
-    return $isValid
+}
 }
 
 #*****************************************************
@@ -335,7 +337,7 @@ Function CheckGraphTenantID
         $msGraphTenantID
     )
 
-    $isValid -eq $false
+    $isValidTest = $false
 
     out-logfile -string "Entering CheckGraphTenantID"
 
@@ -346,24 +348,35 @@ Function CheckGraphTenantID
 
             out-logfile -string ("MSGraphTenantID: "+$msGraphTenantID)
 
-            $isValid = Test-IsValidGuid -GuidString $test
+            $isValidTest = Test-IsValidGuid -GuidString $msGraphTenantID
+
+            if ($isValidTest -eq $FALSE)
+            {
+                out-logfile -string "Specify a correct GUID format."
+            }
+            else
+            {
+                out-logfile -string "GUID format specified."
+            }
         } while (
-            $isValid -eq $false
+            $isValidTest -eq $false
         )
     }
     else
     {
-        $isValid = Test-IsValidGuid -GuidString $test
+        $isValidTest = Test-IsValidGuid -GuidString $msGraphTenantID 
 
-        if ($isValid -eq $FALSE)
+        if ($isValidTest -eq $FALSE)
         {
-            out-logfile -string "Administrator supplied tenantID is not in a valid GUID format." -isError:$TRUE
+            out-logfile -string "Specify a correct GUID format."
         }
-        else 
+        else
         {
-            out-logfile -string "Returning the supplied msgraph tenant id."
+            out-logfile -string "GUID format specified."
         }
     }
+
+    out-logfile -string ("TenantID to return: "+$msGraphTenantID)
 
     return $msGraphTenantID
 }
