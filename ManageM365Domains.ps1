@@ -594,7 +594,7 @@ Function CheckDomainName
     {
         out-logfile -string "Domain name not specified - obtaining."
 
-        $domainName = read-host "Please enter a domain name to takeover"
+        $domainName = read-host "Please enter a domain name to add or takeover"
 
         out-logfile -string ("Domain name to process: "+$domainName)
     }
@@ -651,7 +651,7 @@ Function TestDomainName
                     out-logfile -string "Unable to add the domain as a part of the force takover process - exit." -isError:$TRUE
                 }
             } 'N' {
-                out-logfile -string "Please add the domain manually with new-MGDomain prior to proceeding with force takeover." -isError:$TRUE
+                out-logfile -string "Please add the domain manually with new-MGDomain prior to proceeding with force takeover or add operation." -isError:$TRUE
             } default {
                 out-logfile -string "Invalid environment selection made." -isError:$TRUE
             }
@@ -1221,6 +1221,12 @@ do {
     switch ($actionChoice) {
         1 {  
             out-logfile -string "Entered Add Action"
+
+            $domainName = CheckDomainName -domainName $domainName
+
+            IsDomainViral -domainName $domainName -outputFile $outputViralInfo
+
+            TestDomainName -domainName $domainName -outputFile $outputDomainName
         }
         2 {  
             out-logfile -string "Entered Remove Action"
