@@ -702,7 +702,7 @@ Function TestDomainName
         
         $selection = Read-Host "Add domain to tenant to proceed? Y/N"
 
-        while ($selection -ne "Y" -and $selection -ne "N" -and -not ($selection -is [string])) 
+        while ($selection -ne "Y" -and $selection -ne "N") 
         {
             $selection = Read-Host "Add domain to tenant to proceed? Y/N"
         }         
