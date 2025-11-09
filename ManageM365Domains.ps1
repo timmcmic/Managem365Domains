@@ -345,8 +345,6 @@ Function CheckGraphTenantID
 
         out-logfile -string ("MSGraphTenantID: "+$msGraphTenantID)
 
-        $isValid = Test-IsValidGuid -GuidString $msGraphTenantID
-
         do {
             $msGraphTenantID = read-host "Provied an Entra / Graph TenantID: "
 
