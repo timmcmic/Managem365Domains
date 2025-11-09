@@ -702,6 +702,11 @@ Function TestDomainName
         
         $selection = Read-Host "Add domain to tenant to proceed? Y/N"
 
+        while ($selection -ne "Y" -and $selection -ne "N" -and -not ($selection -is [string])) 
+        {
+            $selection = Read-Host "Add domain to tenant to proceed? Y/N"
+        }         
+
         switch ($selection)
         {
             'Y' {
@@ -1308,7 +1313,7 @@ do {
 
             $continueAction = Read-Host -Prompt "Domain added sucessfully - diplay DNS verfications records (Y/N)"
 
-            while ($continueAction -ne "Y" -or $continueAction -ne "N" -or -not ($actionChoice -is [string])) 
+            while ($continueAction -ne "Y" -and $continueAction -ne "N" -and -not ($actionChoice -is [string])) 
             {
                 $continueAction = Read-Host -Prompt "Domain added sucessfully - diplay DNS verfications records (Y/N)"
             }           
