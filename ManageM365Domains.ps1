@@ -31,8 +31,8 @@
 .PRIVATEDATA
 
 #>
-    #Requires -Module @{ ModuleName = 'Microsoft.Graph.Authentication'; ModuleVersion = '2.28.0' } 
-    #Requires -Module @{ ModuleName = 'Microsoft.Graph.Identity.DirectoryManagement'; ModuleVersion = '2.28.0' }
+    #Requires -Module @{ ModuleName = 'Microsoft.Graph.Authentication'; ModuleVersion = '2.32.0' } 
+    #Requires -Module @{ ModuleName = 'Microsoft.Graph.Identity.DirectoryManagement'; ModuleVersion = '2.32.0' }
 <# 
 
 .DESCRIPTION 
