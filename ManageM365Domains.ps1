@@ -261,6 +261,17 @@ Function CheckGraphEnvironment
 
         $selection = read-host "Please make a environment selection: "
 
+        while ($selection -lt 1 -or $selection -gt 4 -or -not ($selection -is [int])) 
+        {
+            write-host "Select the grpah environment for your tenant:"
+            write-host "1:  Global"
+            write-host "2:  USGov"
+            write-host "3:  USDoD"
+            write-host "4:  China"
+
+            $selection = read-host "Please make a environment selection: "
+        }         
+
         out-logfile -string ("Graph environment selected = "+$selection)
 
         switch($selection)
