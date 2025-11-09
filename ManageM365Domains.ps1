@@ -307,7 +307,7 @@ function Test-IsValidGuid {
         [string]$GuidString
     )
 
-    $isValid = [System.Guid]::TryParse($GuidString, [ref]$null)
+    $isValid = [guid]::TryParse($GuidString, $([ref][guid]::Empty))
 
     return $isValid
 }
