@@ -259,7 +259,7 @@ Function CheckGraphEnvironment
         write-host "3:  USDoD"
         write-host "4:  China"
 
-        $selection = read-host "Please make a environment selection: "
+        [int]$selection = read-host "Please make a environment selection: "
 
         while ($selection -lt 1 -or $selection -gt 4 -or -not ($selection -is [int])) 
         {
@@ -269,20 +269,20 @@ Function CheckGraphEnvironment
             write-host "3:  USDoD"
             write-host "4:  China"
 
-            $selection = read-host "Please make a environment selection: "
+            [int]$selection = read-host "Please make a environment selection: "
         }         
 
         out-logfile -string ("Graph environment selected = "+$selection)
 
         switch($selection)
         {
-            '1' {
+            1 {
                 $msGraphEnvironmentName = $global:global
-            } '2' {
+            } 2 {
                 $msGraphEnvironmentName = $global:usGov
-            } '3' {
+            } 3 {
                 $msGraphEnvironmentName = $global:usDOD
-            } '4' {
+            } 4 {
                 $msGraphEnvironmentName = $global:China
             } default {
                 out-logfile -string "Invalid environment selection made." -isError:$TRUE
