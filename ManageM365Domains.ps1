@@ -307,7 +307,11 @@ function Test-IsValidGuid {
         [string]$GuidString
     )
 
+    out-logfile -string "Testing if input is a valid GUID."
+
     $isValid = [guid]::TryParse($GuidString, $([ref][guid]::Empty))
+
+    out-logfile -string $isValid
 
     return $isValid
 }
