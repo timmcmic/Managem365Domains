@@ -1203,7 +1203,7 @@ $msGraphFunctionURI = ""
 $takeOverDomainResults = $null
 
 $actionChoice = ""
-$continueAction = $false
+$continueAction = "N"
 
 $operations = @{
     add = @{ "Value" =  1 ; "Description" = "Add domain operation"}
@@ -1306,7 +1306,12 @@ do {
 
             TestDomainName -domainName $domainName -outputFile $outputDomainName
 
+            $continueAction = Read-Host -Prompt "Domain added sucessfully - diplay DNS verfications records (Y/N)"
 
+            while ($continueAction -ne "Y" -or $continueAction -ne "N" -or -not ($actionChoice -is [string])) 
+            {
+                $continueAction = Read-Host -Prompt "Domain added sucessfully - diplay DNS verfications records (Y/N)"
+            }           
         }
         2 {  
             out-logfile -string "Entered Remove Action"
