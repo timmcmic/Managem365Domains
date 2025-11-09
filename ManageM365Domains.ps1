@@ -1188,7 +1188,6 @@ ConnectMSGraph -msGraphAuthType $msGraphAuthType -msGraphApplicationID $msGraphA
 WriteMGContext -outputFile $outputMGContext
 
 do {
-
     if ($adminOperation -eq "")
     {
         out-logfile -string "Prompt user for next operation to occur."
@@ -1216,13 +1215,11 @@ do {
 
         out-logfile -string ("Administrator choice = "+$actionChoice.tostring())
     }
-
-    
 } until (
     $actionChoice -eq 9
 )
 
-
+<#
 $domainName = CheckDomainName -domainName $domainName
 
 IsDomainViral -domainName $domainName -outputFile $outputViralInfo
@@ -1254,6 +1251,8 @@ TakeOverDomain -msGraphURI $msGraphFunctionURI -outputFile $outputResultsJSON
 Disconnect-MgGraph
 
 out-logfile -string "Done"
+
+#>
 
 exit
 
