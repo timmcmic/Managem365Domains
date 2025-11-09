@@ -1216,7 +1216,7 @@ do {
 
         out-logfile -string ("Administrator choice = "+$actionChoice.tostring())
 
-        while ($actionChoice -lt 1 -or $number -gt 9 -or -not ($number -is [int])) 
+        while ($actionChoice -lt 1 -or $actionChoice -gt 9 -or -not ($actionChoice -is [int])) 
         {
             $actionChoice = writeOperationsList
         }              
