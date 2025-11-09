@@ -1215,6 +1215,36 @@ do {
 
         out-logfile -string ("Administrator choice = "+$actionChoice.tostring())
     }
+
+    out-logfile -string "Proceed with evaluating the administrator action."
+
+    switch ($actionChoice) {
+        1 {  
+            out-logfile -string "Entered Add Action"
+        }
+        2 {  
+            out-logfile -string "Entered Remove Action"
+        }
+        3 {  
+            out-logfile -string "Entered Verify Action"
+        }
+        4 {  
+            out-logfile -string "Entered Force Takeover Action"
+        }
+        5 {  
+            out-logfile -string "Entered Display Domain Verification Records Action"
+        }
+        6 {  
+            out-logfile -string "Entered Validate Domain Records in Public DNS Action"
+        }
+        7 {  
+            out-logfile -string "Entered Display M365 DNS Records Action"
+        }
+        8 {  
+            out-logfile -string "Entered Determined Domain Viral Status Action"
+        }
+        Default {}
+    }
 } until (
     $actionChoice -eq 9
 )
