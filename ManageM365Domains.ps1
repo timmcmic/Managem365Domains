@@ -60,7 +60,10 @@ Param(
     [Parameter(Mandatory=$false)]
     [string]$msGraphClientSecret="",
     [Parameter(Mandatory=$false)]
-    [string]$msGraphUseBeta=$true
+    [string]$msGraphUseBeta=$true,
+     [Parameter(Mandatory = $false)]
+    [ValidateSet("","Add","Remove","Verify","Force","DNSVerification","DNSPublic","DNSRecords","Viral")]
+    [string]$adminOperation=""
 )
 
 
@@ -848,8 +851,6 @@ Function GetPublicDNS
         } 
     }
 
-    
-
     WriteXMLFile -data $functionDNSRecords -outputFile $outputFile
 
     foreach ($entry in $functionDNSRecords)
@@ -1044,6 +1045,28 @@ Function IsDomainViral
     $functionResults.content | out-file -FilePath $outputFile
 }
 
+#*****************************************************
+
+ Function write-hashTable
+    {
+        [cmdletbinding()]
+
+        Param
+        (
+            [Parameter(Mandatory = $true)]
+            $hashTable
+        )
+
+        Out-LogFile -string "********************************************************************************"
+    
+        foreach ($key in $hashtable.GetEnumerator())
+        {
+            out-logfile -string ("Key: "+$key.name+" is "+$key.Value.Description+" with value "+$key.Value.Value)
+        }      
+
+        Out-LogFile -string "********************************************************************************"
+    }
+
 #=====================================================================================
 #Begin main function body.
 #=====================================================================================
@@ -1093,6 +1116,20 @@ $global:dnsTypeSOA = "SOA"
 $msGraphFunctionURI = ""
 $takeOverDomainResults = $null
 
+$actionChoice = ""
+$continueAction = $false
+
+$operations = @{
+    add = @{ "Value" =  1 ; "Description" = "Add domain operation"}
+    remove = @{ "Value" =  2 ; "Description" = "Remove domain operation"}
+    verify = @{ "Value" =  3 ; "Description" = "Verify domain operation"}
+    force = @{ "Value" = 4 ; "Description" = "Force domain takeover operation"}
+    DNSVerification = @{ "Value" =  5 ; "Description" = "Display DNS verification records operation"}
+    DNSPublic = @{ "Value" =  6 ; "Description" = "Display DNS records discovered in public DNS operation"}
+    DNSRecords = @{ "Value" =  7 ; "Description" = "Display DNS records for M365 services"}
+    viral = @{ "Value" =  8 ; "Description" = "Determine domain viral status operation"}
+}
+
 #Create the log file.
 
 new-logfile -logFileName $logFileName -logFolderPath $logFolderPath
@@ -1124,6 +1161,8 @@ out-logfile -string ("Output DomainName: "+$outputDomainName)
 out-logfile -string ("Output ResultsJSON: "+$outputResultsJson)
 out-logfile -string ("Output ViralInfo: "+$outputViralInfo)
 
+write-hashTable -hashTable $operations
+
 #Establish graph connection.
 
 out-logfile -string "Perfomring graph pre-checks and connections."
@@ -1147,6 +1186,42 @@ out-logfile -string ("MSGraphAuthType: "+$msGraphAuthType)
 ConnectMSGraph -msGraphAuthType $msGraphAuthType -msGraphApplicationID $msGraphApplicationID -msGraphCertificateThumbprint $msGraphCertificateThumbprint -msGraphStaticScope $msGraphStaticScope -msGraphClientSecret $msGraphClientSecret -msGraphEnvironmentName $msGraphEnvironmentName -msGraphTenantID $msGraphTenantID
 
 WriteMGContext -outputFile $outputMGContext
+
+do {
+
+    if ($adminOperation -eq "")
+    {
+        out-logfile -string "Prompt user for next operation to occur."
+
+        write-host "********************************************************"
+        write-host "Select operation to perform:"
+        write-host "1:  Add a Domain"
+        write-host "2:  Remove a Domain"
+        write-host "3:  Verify a Domain"
+        write-host "4:  Force Takeover Domain"
+        write-host "5:  Display Domain Verification Records"
+        write-host "6:  Validate Domain Verification Records in Public DNS"
+        write-host "7:  Display Domain DNS Records"
+        write-host "8:  Determine Domain Viral Status"
+        write-host "9:  Exit"
+        write-host "********************************************************"
+
+        [int]$actionChoice = read-host -Prompt "Operation Selected:"
+
+        out-logfile -string ("Administrator choice = "+$actionChoice.tostring())
+    }
+    else 
+    {
+        $actionChoice = $operations.$adminOperation.value
+
+        out-logfile -string ("Administrator choice = "+$actionChoice.tostring())
+    }
+
+    
+} until (
+    $actionChoice -eq 9
+)
+
 
 $domainName = CheckDomainName -domainName $domainName
 
