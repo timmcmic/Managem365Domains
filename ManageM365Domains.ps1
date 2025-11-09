@@ -1046,26 +1046,48 @@ Function IsDomainViral
 }
 
 #*****************************************************
-
  Function write-hashTable
+{
+    [cmdletbinding()]
+
+    Param
+    (
+        [Parameter(Mandatory = $true)]
+        $hashTable
+    )
+
+    Out-LogFile -string "********************************************************************************"
+
+    foreach ($key in $hashtable.GetEnumerator())
     {
-        [cmdletbinding()]
+        out-logfile -string ("Key: "+$key.name+" is "+$key.Value.Description+" with value "+$key.Value.Value)
+    }      
 
-        Param
-        (
-            [Parameter(Mandatory = $true)]
-            $hashTable
-        )
+    Out-LogFile -string "********************************************************************************"
+}
 
-        Out-LogFile -string "********************************************************************************"
-    
-        foreach ($key in $hashtable.GetEnumerator())
-        {
-            out-logfile -string ("Key: "+$key.name+" is "+$key.Value.Description+" with value "+$key.Value.Value)
-        }      
+#*****************************************************
+ Function writeOperationsList
+{
+    [cmdletbinding()]
 
-        Out-LogFile -string "********************************************************************************"
-    }
+    write-host "********************************************************"
+    write-host "Select operation to perform:"
+    write-host "1:  Add a Domain"
+    write-host "2:  Remove a Domain"
+    write-host "3:  Verify a Domain"
+    write-host "4:  Force Takeover Domain"
+    write-host "5:  Display Domain Verification Records"
+    write-host "6:  Validate Domain Verification Records in Public DNS"
+    write-host "7:  Display Domain DNS Records"
+    write-host "8:  Determine Domain Viral Status"
+    write-host "9:  Exit"
+    write-host "********************************************************"
+
+    [int]$actionChoice = read-host -Prompt "Operation Selected:"
+
+    return $actionChoice
+}
 
 #=====================================================================================
 #Begin main function body.
@@ -1192,22 +1214,14 @@ do {
     {
         out-logfile -string "Prompt user for next operation to occur."
 
-        write-host "********************************************************"
-        write-host "Select operation to perform:"
-        write-host "1:  Add a Domain"
-        write-host "2:  Remove a Domain"
-        write-host "3:  Verify a Domain"
-        write-host "4:  Force Takeover Domain"
-        write-host "5:  Display Domain Verification Records"
-        write-host "6:  Validate Domain Verification Records in Public DNS"
-        write-host "7:  Display Domain DNS Records"
-        write-host "8:  Determine Domain Viral Status"
-        write-host "9:  Exit"
-        write-host "********************************************************"
-
-        [int]$actionChoice = read-host -Prompt "Operation Selected:"
+        $actionChoice = writeOperationsList
 
         out-logfile -string ("Administrator choice = "+$actionChoice.tostring())
+
+        while ($actionChoice -lt 1 -or $number -gt 9 -or -not ($number -is [int])) 
+        {
+            $actionChoice = writeOperationsList
+        }              
     }
     else 
     {
@@ -1227,6 +1241,8 @@ do {
             IsDomainViral -domainName $domainName -outputFile $outputViralInfo
 
             TestDomainName -domainName $domainName -outputFile $outputDomainName
+
+
         }
         2 {  
             out-logfile -string "Entered Remove Action"
