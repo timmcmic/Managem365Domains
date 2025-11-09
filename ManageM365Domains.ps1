@@ -341,23 +341,19 @@ Function CheckGraphTenantID
 
     if ($msGraphTenantID -eq "")
     {
-        $msGraphTenantID = read-host "Provied an Entra / Graph TenantID: "
-
-        out-logfile -string ("MSGraphTenantID: "+$msGraphTenantID)
-
         do {
             $msGraphTenantID = read-host "Provied an Entra / Graph TenantID: "
 
             out-logfile -string ("MSGraphTenantID: "+$msGraphTenantID)
 
-            $isValid = Test-IsValidGuid -GuidString $msGraphTenantID
+            $isValid = Test-IsValidGuid -GuidString $test
         } while (
             $isValid -eq $false
         )
     }
     else
     {
-        $isValid = Test-IsValidGuid -GuidString $msGraphTenantID
+        $isValid = Test-IsValidGuid -GuidString $test
 
         if ($isValid -eq $FALSE)
         {
